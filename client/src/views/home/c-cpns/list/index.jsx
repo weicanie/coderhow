@@ -2,7 +2,7 @@ import React, { memo, useState } from 'react';
 import ListWrapper from './style';
 import Article from './c-cpns/article';
 import useFetchData from '@/hooks/useFetchData';
-import getArticleList from '@/services/modules/getArticleList';
+import getArticleList from '@/services/modules/article/getArticleList';
 
 const List = memo(() => {
 	const [articleList, setArticleList] = useState(null);

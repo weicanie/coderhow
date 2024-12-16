@@ -1,4 +1,4 @@
-import getArticleList from '@/services/modules/getArticleList';
+import getArticleList from '@/services/modules/article/getArticleList';
 import imageURLConcat from '@/utils/imageURLConcat';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 const getArticleListAction = createAsyncThunk('articleList', async (extraInfo, store) => {

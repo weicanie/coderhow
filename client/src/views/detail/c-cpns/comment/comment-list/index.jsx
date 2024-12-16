@@ -1,8 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { LikeOutlined, MessageOutlined } from '@ant-design/icons';
 import { Avatar, Button, ConfigProvider, List, Space } from 'antd';
 import CommentInput from '@/components/comment-input';
-import deepCopy from '@/utils/wei_deepCopy';
 import { detailContext } from '@/views/detail';
 import CommentListWrapper from './style';
 
@@ -56,13 +55,13 @@ const CommentList = props => {
 				itemLayout="vertical"
 				size="small"
 				//分页器
-				pagination={{
+			/* 				pagination={{
 					//切页事件处理程序
 					onChange: page => {
 						console.log('pagination', page);
 					},
 					pageSize: 100
-				}}
+				}} */
 				footer={<div></div>}
 				//列表数据源
 				dataSource={data}
@@ -117,6 +116,8 @@ const CommentList = props => {
 										alt=""
 									/>
 								}
+
+								style={{position:'relative',left:'50px'}}
 							>
 								<List.Item.Meta
 									avatar={<Avatar src={item.avatar} size={50} />}

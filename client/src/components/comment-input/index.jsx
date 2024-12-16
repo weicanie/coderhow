@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import CommentInputWrapper from './style';
 import { Avatar, Button, Form, Input, message } from 'antd';
 import getFromLS from '@/utils/ls_get';
-import postComment from '@/services/modules/postComment';
+import postComment from '@/services/modules/comment/postComment';
 import deepCopy from '@/utils/wei_deepCopy';
 
 const CommentInput = props => {
@@ -47,7 +47,10 @@ const CommentInput = props => {
 						}
 					]}
 				>
-					<Input.TextArea showCount maxLength={500} rows={5} id="input-comment" />
+					<Input.TextArea 
+					showCount maxLength={500} rows={3} id="input-comment" 
+					placeholder='发布评论~'
+					/>
 				</Form.Item>
 
 				<Form.Item>

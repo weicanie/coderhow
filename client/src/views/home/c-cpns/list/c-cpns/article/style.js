@@ -17,24 +17,39 @@ const ArticleWrapper = styled.div`
 			font-weight: 600;
 			font-size: 16px;
 		}
-		.container {
+		/* 首页文章MD展示 */
+		.container p {
 			font-size: 14px;
 			color: #8a919f;
 			${props => props.theme.mixin.textEllipsis}
-			/* 首页取消md加粗 */
+			/* 层叠 */
 			strong {
-				font-weight: 500;
-			}
+			font-size: 19px;
+			color:black;
+			${props => props.theme.mixin.textEllipsis}
+			/* 首页取消md加粗 */
 		}
+		}
+		
+
 		.data {
 			font-size: 13px;
 			margin-top: 45px;
 			color: #8a919f;
 			display: flex;
+
 			.place-holder {
-				width: 500px;
+				flex:3;
 			}
+
 			.tag {
+				flex:3;
+				span {
+					float:right;
+				}
+			}
+			.author {
+				flex:3;
 			}
 		}
 	}

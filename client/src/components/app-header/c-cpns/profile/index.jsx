@@ -1,12 +1,11 @@
 import React, { memo, useEffect, useState } from 'react';
 import ProfilerWrapper from './style';
-import IconGlobal from '@/assets/svg/icon_global';
 import ProfileButton from './c-cpns/prifile-button';
 import Toolkit from './c-cpns/toolkit';
 import { useSelector } from 'react-redux';
 import useNavigator from '@/hooks/useNavigator';
 import getFromLS from '@/utils/ls_get';
-import { OpenAIOutlined, RobotFilled, RobotOutlined } from '@ant-design/icons';
+import { RobotFilled, RobotOutlined } from '@ant-design/icons';
 
 const Profile = memo(() => {
 	//控制toolkit的显示

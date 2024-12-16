@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 const UserWrapper = styled.div`
+
 	.place-holder {
 		height: 80px;
 	}

@@ -16,7 +16,7 @@ const Comments = props => {
 	const commentList = articleDetail?.comment;
 	const commentListDone = commentList && commentListTrans(commentList);
 	// *空评论情况：服务器返回含有一个所有属性为null的对象的数组
-	// console.log('Comments',commentList, commentListDone )
+	console.log('Comments',commentList, commentListDone )
 
 	const data = commentListDone?.map((comment, i) => ({
 		//评论自身id
@@ -71,13 +71,13 @@ const Comments = props => {
 				itemLayout="vertical"
 				size="small"
 				//分页器
-				pagination={{
+/* 				pagination={{
 					//切页事件处理程序
 					onChange: page => {
 						console.log('pagination', page);
 					},
 					pageSize: 100
-				}}
+				}} */
 				footer={<div></div>}
 				//列表数据源
 				dataSource={data}
@@ -86,7 +86,7 @@ const Comments = props => {
 					let extra;
 					// *占位div高度（为了子评论列表能撑开高度）
 
-					let plHeight = item.childComment?.length ? item.childComment.length * 170.89 + 140 : 0;
+					let plHeight = item.childComment?.length ? item.childComment.length * 170.89 + 70 : 0;
 					if (out) plHeight += 170.89;
 					if (item.commentId === commentOutId) {
 						// console.log('Comments 弹出评论框')
@@ -123,7 +123,6 @@ const Comments = props => {
 							</div>
 						</div>
 					);
-
 					return (
 						//{列表项展示配置
 						<div onClick={e => commentClickHandler(e)}>
@@ -148,6 +147,7 @@ const Comments = props => {
 										alt=""
 									/>
 								}
+								
 							>
 								<List.Item.Meta
 									avatar={<Avatar src={item.avatar} size={50} />}

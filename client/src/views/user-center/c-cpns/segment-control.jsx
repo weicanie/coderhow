@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FormOutlined, HomeOutlined, UserOutlined } from '@ant-design/icons';
 import { Avatar, Flex, Segmented } from 'antd';
 import UserInfo from './user-info/user-info';
-import Write from './write';
+import Write from './write/write';
 import MdEditor from '@/base-ui/md-editor';
 import useNavigator from '@/hooks/useNavigator';
 const App = props => {
@@ -79,7 +79,7 @@ const App = props => {
 								<Avatar
 									icon={<HomeOutlined />}
 									style={{
-										backgroundColor: '#d7406d'
+										backgroundColor: 'rgb(186,170,188)'
 									}}
 								/>
 								<div>回到首页</div>

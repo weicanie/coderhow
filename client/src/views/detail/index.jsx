@@ -11,10 +11,9 @@ import UserCard from '@/components/user-card';
 import CommentInput from '@/components/comment-input';
 import useFetchData from '@/hooks/useFetchData';
 import MdShow from '@/base-ui/md-show';
-import deepCopy from '@/utils/wei_deepCopy';
-import getArticleList from '@/services/modules/getArticleList';
-import getArticle from '@/services/modules/getArticle';
+import getArticle from '@/services/modules/article/getArticle';
 import fetchData from '@/utils/fetchData';
+import articleMdShow from '@/utils/articleMdShow';
 export const detailContext = React.createContext();
 
 const Detail = memo(() => {
@@ -23,7 +22,7 @@ const Detail = memo(() => {
 	const [update, updateNow] = useState(0);
 	const index = useParams().index;
 	// 为了在detail处刷新页面时能重新请求数据
-	// !问题：组件重新渲染时不重新执行useFetchData（自定义hook）
+	// 问题：组件重新渲染时不重新执行useFetchData（自定义hook）
 	useFetchData(
 		setArticleDetail,
 		{
@@ -53,13 +52,15 @@ const Detail = memo(() => {
 
 	const dispatch = useDispatch();
 	useEffect(() => {
-		dispatch(setPageName('user-center'));
+		dispatch(setPageName('detail'));
 		dispatch(setIsOut(false));
 		dispatch(setBgColor('white'));
 	}, [dispatch]);
 	// *评论列表是否触发输入框
 	const [out, setOut] = useState(false);
 	const out_passDetail = i => setOut(i);
+
+	// console.log(articleDetail)
 	return (
 		<detailContext.Provider value={{ update, updateNow, out_passDetail }}>
 			{articleDetail && (
@@ -84,11 +85,9 @@ const Detail = memo(() => {
 						<UserCard username={username} avatar_url={avatar_url} />
 						{/* 文章内容展示 */}
 						<div className="underline top"></div>
-						<div className="title">{articleDetail.title}</div>
-						<MdShow value={articleDetail.content} />
+						<MdShow value={articleMdShow(articleDetail.title, articleDetail.content, false, articleDetail.ai_summary)} />
 						<div className="underline bottom"></div>
 						{/* 评论区 */}
-
 						{/* 添加评论 */}
 						{!out && (
 							<CommentInput

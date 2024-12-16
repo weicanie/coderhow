@@ -8,7 +8,6 @@ import debounce from '@/utils/wei_debounce';
 import { message } from 'antd';
 import useNavigator from '@/hooks/useNavigator';
 import getFromLS from '@/utils/ls_get';
-import { ReadOutlined, SmileOutlined } from '@ant-design/icons';
 
 const SearchBar = memo(props => {
 	const { flashControl } = props;
@@ -62,7 +61,8 @@ const SearchBar = memo(props => {
 	//三、点击触发动画的实现逻辑
 	//home页面，点击触发动画；非home页面时，点击不触发动画
 	const clickHandler = payload => {
-		if (flashControl === false) return;
+		console.log('clickHandler')
+		if (flashControl === false) navigator('/');
 		if (pageName === 'home') {
 			dispatch(setIsOut(payload));
 		}
@@ -98,17 +98,17 @@ const SearchBar = memo(props => {
 				timeout={1000}
 			>
 				<div className="search-bar">
-					{isOut && [
-						<div className="text theme"onClick={toRead}>𝙍𝙀𝘼𝘿</div>,
-						<div className="text input" onClick={toWrite}>𝙒𝙍𝙄𝙏𝙀</div>,
+					{isOut && <>
+						<div className="text theme"onClick={toRead}>𝙍𝙀𝘼𝘿</div>
+						<div className="text input" onClick={toWrite}>𝙒𝙍𝙄𝙏𝙀</div>
 						<div className="text label" onClick={toAI}>𝘼𝙄</div>
-					]}
-					{!isOut && [
-						<div className="text">Coding now</div>,
+						</>}
+					{!isOut && <>
+						<div className="text">Coding now</div>
 						<div className="icon">
 							<IconSearchBar />
 						</div>
-					]}
+						</>}
 				</div>
 			</CSSTransition>
 		</SearchBarrWrapper>

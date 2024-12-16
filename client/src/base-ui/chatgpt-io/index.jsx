@@ -1,235 +1,49 @@
-import {
-  Attachments,
-  Bubble,
-  Conversations,
-  Prompts,
-  Sender,
-  Welcome,
-  useXAgent,
-  useXChat,
-} from '@ant-design/x';
-import { createStyles } from 'antd-style';
+import {Bubble,Conversations,Prompts,Sender,Welcome,useXAgent,useXChat,} from '@ant-design/x';
 import React, { useEffect } from 'react';
 import {
-  CheckCircleOutlined,
-  CloudUploadOutlined,
-  CommentOutlined,
   EllipsisOutlined,
-  FireOutlined,
-  HeartOutlined,
-  HomeOutlined,
-  PaperClipOutlined,
   PlusOutlined,
-  ReadOutlined,
   ShareAltOutlined,
-  SmileOutlined,
 } from '@ant-design/icons';
-import { Badge, Button, Space } from 'antd';
-import postQuestionToAI from '@/services/modules/post-to-AI';
-import BtnWrapper from './style';
-import { useNavigate } from 'react-router';
+import { Avatar, Button, message, message as messager, Space } from 'antd';
+import postQuestionToAI from '@/services/modules/aichat/post-to-AI';
+import  { useStyle } from './style';
 import useNavigator from '@/hooks/useNavigator';
-const renderTitle = (icon, title) => (
-  <Space align="start">
-    {icon}
-    <span>{title}</span>
-  </Space>
-);
+import { aiAvatar, placeholderPromptsItems, senderPromptsItems } from './config';
+import getFromLS from '@/utils/ls_get';
+import postConversation from '@/services/modules/aichat/postConversation';
+import getConversationList from '@/services/modules/aichat/getConversationList';
 
-// *推荐提示词（随一个进行展示）
-const hotPrompt = [
-  {
-    key: '1-1',
-    description: `chatgpt 有什么新功能?`,
-  },
-  {
-    key: '1-2',
-    description: `serverless 是什么?`,
-  },
-  {
-    key: '1-3',
-    description: `node 的官方文档在哪?`,
-  },
-];
-const guidePrompt = [
-  {
-    key: '2-1',
-    icon: <CheckCircleOutlined />,
-    description: `chatgpt 进阶使用技巧`,
-  },
-  {
-    key: '2-2',
-    icon: <SmileOutlined />,
-    description: `serverless 的发展前景`,
-  },
-  {
-    key: '2-3',
-    icon: <CommentOutlined />,
-    description: `node 国内开发者社区`,
-  },
-];
-// *历史会话栏
-const defaultConversationsItems = [
-  {
-    key: '0',
-    label: '历史会话功能制作中~',
-  },
-];
-// *组件样式
-const useStyle = createStyles(({ token, css }) => {
-  return {
-    //整体
-    layout: css`
-      width: 100%;
-      min-width: 1032px;
-      height: 722px;
-      min-height:722px;
-      border-radius: ${token.borderRadius}px;
-      display: flex;
-      background: ${token.colorBgContainer};
-      background-color:rgb(242,243,245);
-      font-family: AlibabaPuHuiTi, ${token.fontFamily}, sans-serif;
+// *会话栏
+let defaultConversationsItems ;
+// *更新会话和会话列表
+async function getConversationListAndUpdate(setMessages, activeKey, setConversationsItems) {
+  const conversationList = await getConversationList();
+  // console.log('getConversationListAndUpdate', conversationList)
+  //浅拷贝
+  const newMessages = conversationList&&conversationList[activeKey]?.content.map(item => item)
+  setMessages(newMessages? newMessages : [])
+  if (!conversationList) {
+    defaultConversationsItems = [
+      {
+        key: '0',
+        label: 'Conversation 0',
+      },
+    ];
+  } else {
+    defaultConversationsItems = conversationList.map(item => ({
+      key: item.keyname,
+      label: item.label
+    }))
+  }
+  setConversationsItems(defaultConversationsItems)
+// console.log('defaultConversationsItems', defaultConversationsItems)
+}
 
-      .ant-prompts {
-        color: ${token.colorText};
-      }
-    `,
-    //历史会话栏 
-    menu: css`
-      background: ${token.colorBgLayout}80;
-      width: 200px;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-    `,
-    conversations: css`
-      padding: 0 12px;
-      flex: 1;
-      overflow-y: auto;
-    `,
-
-    //聊天框
-    chat: css`
-      height: 100%;
-      width: 100%;
-      max-width: 900px;
-      margin: 0 auto;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      padding: ${token.paddingLG}px;
-      gap: 16px;
-    `,
-    messages: css`
-      flex: 1;
-    `,
-    // *撑起聊天框的宽度
-    placeholder: css`
-      min-width:800px;
-      padding-top: 32px;
-    `,
-    sender: css`
-      box-shadow: ${token.boxShadow};
-    `,
-    logo: css`
-      display: flex;
-      height: 72px;
-      align-items: center;
-      justify-content: start;
-      padding: 0 24px;
-      box-sizing: border-box;
-
-      img {
-        width: 24px;
-        height: 24px;
-        display: inline-block;
-      }
-
-      span {
-        display: inline-block;
-        margin: 0 8px;
-        font-weight: bold;
-        color: ${token.colorText};
-        font-size: 16px;
-      }
-    `,
-    addBtn: css`
-      background: #1677ff0f;
-      border: 1px solid #1677ff34;
-      width: calc(100% - 24px);
-      margin: 0 12px 24px 12px;
-    `,
-  };
-});
-
-// *会话界面初始提示
-const placeholderPromptsItems = [
-  {
-    key: '1',
-    label: renderTitle(
-      <FireOutlined
-        style={{
-          color: '#FF4D4F',
-        }}
-      />,
-      '热门主题',
-    ),
-    description: '看上哪一个了?',
-    children: hotPrompt,
-  },
-  {
-    key: '2',
-    label: renderTitle(
-      <ReadOutlined
-        style={{
-          color: '#1890FF',
-        }}
-      />,
-      '使用指引',
-    ),
-    // description: '如何建立自己的知识库?',
-    description: '需要哪一个?',
-    children: guidePrompt,
-  },
-];
-// *输入框上方提示
-const senderPromptsItems = [
-  {
-    key: '1',
-    description: '热门主题',
-    icon: (
-      <FireOutlined
-        style={{
-          color: '#FF4D4F',
-        }}
-      />
-    ),
-  },
-  {
-    key: '2',
-    description: '使用指引',
-    icon: (
-      <ReadOutlined
-        style={{
-          color: '#1890FF',
-        }}
-      />
-    ),
-  },
-  {
-    key: '2',
-    description: '回到首页',
-    icon: (
-      <HomeOutlined
-        style={{
-          color: '#1890FF',
-        }}
-      />
-    ),
-  },
-];
-
+const avatar_url = getFromLS('user')?.avatar_url;
+// *聊天气泡配置
 const roles = {
+  //ai聊天气泡
   ai: {
     placement: 'start',
     typing: {
@@ -241,54 +55,63 @@ const roles = {
         borderRadius: 16,
       },
     },
+    avatar:<Avatar src={'http://47.102.108.122:8000/avatar/14'} alt="默认头像" size={60}/>,
   },
+  //用户聊天气泡
   local: {
     placement: 'end',
-    variant: 'shadow',
+    avatar:<Avatar src={avatar_url} alt="默认头像" size={60}/>,
   },
 };
-const Independent = () => {
+const AIChat = () => {
+  const token = getFromLS('user')?.token
   const navigator = useNavigator()
   const toHome = () => {
     navigator('/home')
   }
-  // ==================== Style ====================
+
   const { styles } = useStyle();
 
-  // ==================== State ====================
   const [headerOpen, setHeaderOpen] = React.useState(false);
   const [content, setContent] = React.useState('');
-  const [conversationsItems, setConversationsItems] = React.useState(defaultConversationsItems);
-  const [activeKey, setActiveKey] = React.useState(defaultConversationsItems[0].key);
-  const [attachedFiles, setAttachedFiles] = React.useState([]);
+  // *会话栏
+  const [conversationsItems, setConversationsItems] = React.useState();
+  // 哪个历史会话被选中
+  const [activeKey, setActiveKey] = React.useState(0);
 
-  // ==================== Runtime ====================
   const [agent] = useXAgent({
-    request: async ({ message }, { onSuccess }) => {
+    request: async (conversation, { onSuccess }) => {
+      // messages保存了本次会话的问答数据
+      // *作为上下文发送给服务器（考虑token长度，限制其长度，先定为字符串总长不超过2500）
+      const {message, messages} = conversation;
+      messages.pop();
       // *回到首页功能
       if (message === '回到首页') toHome()
+
       try {
-        // *将提问上传服务器给chatgpt进行解答
-        const answer = await postQuestionToAI(message);
-        // *展示回答
+        // 将提问上传服务器给chatgpt进行解答
+        const answer = await postQuestionToAI(message, messages);
+        // 展示回答
         if (answer) onSuccess(answer);
       } catch (error) {
         console.log('useXAgent error', error)
-        message.info('网络出了点问题，修复中~')
+        messager.info('网络出了点问题，修复中~')
       }
 
     },
   });
+
+  // ! messages是当前的会话数据（不是新增）
   const { onRequest, messages, setMessages } = useXChat({
     agent,
   });
-  useEffect(() => {
-    if (activeKey !== undefined) {
-      setMessages([]);
-    }
-  }, [activeKey]);
 
-  // ==================== Event ====================
+  // *展示服务器储存的会话列表，且可以由用户续写
+  useEffect(() => {
+    getConversationListAndUpdate(setMessages, activeKey, setConversationsItems)
+  }, [activeKey])
+
+
   const onSubmit = (nextContent) => {
     if (!nextContent) return;
     onRequest(nextContent);
@@ -297,27 +120,38 @@ const Independent = () => {
   const onPromptsItemClick = (info) => {
     onRequest(info.data.description);
   };
-  const onAddConversation = () => {
+  const onAddConversation = async () => {
+    if (!token) {
+      message.info('请先登录~')
+      return
+    }
+    // *上传上一会话和新建这一会话
+    await postConversation(activeKey, conversationsItems[activeKey].label, messages)
+    await postConversation((+conversationsItems[conversationsItems.length - 1].key) + 1, `Conversation ${conversationsItems.length}`, [])
     setConversationsItems([
       ...conversationsItems,
       {
         key: `${conversationsItems.length}`,
-        label: `New Conversation ${conversationsItems.length}`,
+        label: `Conversation ${conversationsItems.length}`,
       },
     ]);
     setActiveKey(`${conversationsItems.length}`);
   };
-  const onConversationClick = (key) => {
+ // *切换历史会话前，将上一个会话上传服务器
+  const onConversationClick = async (key) => {
+    if (!token) {
+      message.info('请先登录~')
+      return
+    }
+    await postConversation(activeKey, conversationsItems[activeKey].label, messages)
     setActiveKey(key);
   };
-  const handleFileChange = (info) => setAttachedFiles(info.fileList);
 
-  // ==================== Nodes ====================
   const placeholderNode = (
     <Space direction="vertical" size={16} className={styles.placeholder}>
       <Welcome
         variant="borderless"
-        icon="http://47.102.108.122:8000/avatar/12"
+        icon={aiAvatar}
         title="亻尔女子，这是 coderhow AI 助手~"
         description="coderhow AI 助手"
         styles={{
@@ -325,12 +159,12 @@ const Independent = () => {
             width: 500,
           },
         }}
-        extra={
+/*         extra={
           <Space>
             <Button icon={<ShareAltOutlined />} />
             <Button icon={<EllipsisOutlined />} />
           </Space>
-        }
+        } */
       />
       <Prompts
         title="对什么感兴趣?"
@@ -347,18 +181,15 @@ const Independent = () => {
       />
     </Space>
   );
+
+  // *将消息内容列表映射到聊天框
   const items = messages.map(({ id, message, status }) => ({
     key: id,
     loading: status === 'loading',
     role: status === 'local' ? 'local' : 'ai',
     content: message,
   }));
-  // *附件按钮
-  const attachmentsNode = (
-    <Badge dot={attachedFiles.length > 0 && !headerOpen}>
-      <Button type="text" icon={<PaperClipOutlined />} onClick={() => setHeaderOpen(!headerOpen)} />
-    </Badge>
-  );
+
   const senderHeader = (
     <Sender.Header
       title="Attachments"
@@ -370,29 +201,12 @@ const Independent = () => {
         },
       }}
     >
-      {/* 附件弹出框 */}
-      {/* <Attachments
-        beforeUpload={() => false}
-        items={attachedFiles}
-        onChange={handleFileChange}
-        placeholder={(type) =>
-          type === 'drop'
-            ? {
-                title: 'Drop file here',
-              }
-            : {
-                icon: <CloudUploadOutlined />,
-                title: 'Upload files',
-                description: 'Click or drag files to this area to upload',
-              }
-        }
-      /> */}
     </Sender.Header>
   );
   const logoNode = (
     <div className={styles.logo}>
       <img
-        src="http://47.102.108.122:8000/avatar/12"
+        src={aiAvatar}
         draggable={false}
         alt="logo"
       />
@@ -400,7 +214,6 @@ const Independent = () => {
     </div>
   );
 
-  // ==================== Render =================
   return (
     <div className={styles.layout}>
       <div className={styles.menu}>
@@ -412,7 +225,6 @@ const Independent = () => {
           type="link"
           className={styles.addBtn}
           icon={<PlusOutlined />}
-          disabled
         >
           新会话
         </Button>
@@ -457,4 +269,4 @@ const Independent = () => {
     </div>
   );
 };
-export default Independent;
+export default AIChat;

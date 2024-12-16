@@ -1,6 +1,6 @@
 //commit
 //login
-import coderhubCommit from '@/services/modules/commit-and-login';
+import coderhubCommit from '@/services/modules/user/commit-and-login';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 const coderhubCommitAction = createAsyncThunk('coderhubCommit', async userInfo => {

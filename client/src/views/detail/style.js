@@ -28,8 +28,7 @@ const DetailWrapper = styled.div`
 	//文章内容
 	.container p {
 		margin-bottom: 10px !important;
-		position: relative;
-		left: 30px;
+		width: 80%;
 	}
 
 	//去掉空数据提示
@@ -52,14 +51,15 @@ const DetailWrapper = styled.div`
 		left: 120px;
 	}
 	.underline {
-		border-bottom: 1px solid rgb(241, 242, 243);
-		width: 95%;
+		border-bottom: 1px solid rgb(216,222,228);
+		width: 100%;
 		position: relative;
 		left: 50%;
 		transform: translate(-50%);
 	}
 	.underline.top {
-		margin-top: 30px;
+		margin-top: 0px;
+		margin-bottom: 70px;
 	}
 	.underline.bottom {
 		margin-top: 20px;

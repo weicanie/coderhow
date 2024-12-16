@@ -20,6 +20,8 @@ const SearchBarrWrapper = styled.div`
 			return props.bgColor;
 		}};
 	}
+
+
 	.search-bar {
 		background-color: white;
 		border: 1px solid;
@@ -40,6 +42,14 @@ const SearchBarrWrapper = styled.div`
 		align-items: center;
 
 		.text {
+			display: flex;
+			align-items:center;
+			transition:all .2s;
+			height: 100%;
+			border-radius:30px;
+			&:hover {
+				background-color: rgb(206, 210, 234);
+			}
 			padding-left: 40px;
 			padding-right:40px;
 			font-weight: 500;
@@ -52,6 +62,10 @@ const SearchBarrWrapper = styled.div`
 		}
 		.theme,.input,.label {
 			font-size:22px;
+		}
+		.label {
+			position: relative;
+			left:11px;
 		}
 		/* 搜索按钮 */
 		.icon {

@@ -9,7 +9,7 @@ async function useFetchData(
 		fetcher, //进行网络请求的函数
 		asyncAcion
 	},
-	...params //fetcher/asyncAcion（会传入fetcher）参数
+	...params //fetcher参数, asyncAcion会传入fetcher
 ) {
 	// *记录组件的状态，避免重复调用setData造成组件无限更新
 	const [last, setLast] = useState({});
@@ -17,6 +17,7 @@ async function useFetchData(
 	useMemo(async () => {
 		data = await fetcher(...params);
 		// *数据传给组件
+		console.log(data)
 		if (!shallowEqual(last, data)) {
 			setLast(data);
 			setData(data);

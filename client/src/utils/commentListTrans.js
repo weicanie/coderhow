@@ -12,45 +12,50 @@ function deepCopyObj(obj) {
 	}
 	return newObj;
 }
-
+// *把commentList处理成可以直接展示的结构
 function commentListTrans(commentListIn) {
-	//把commentList处理成可以直接展示的结构
+	// *通过排序解决顺序不确定的问题
+	commentListIn.sort((a,b) => a.id - b.id).map(item => deepCopyObj(item));// * 按从旧到新的顺序
+	// console.log('commentListTrans', commentListIn)
 	const commentList = commentListIn.map(item => deepCopyObj(item));
 	// console.log('deepCopyObj', commentList)
-	const commentList_1 = commentList.filter(item => item.comment_comment_id === null);
-	const commentList_2 = commentList.filter(item => item.comment_comment_id !== null);
-
-	for (let j = commentList_1.length - 1; j >= 0; j--) {
-		// * 按从旧到新的顺序
-		const comment = commentList_1[j]; // * 当前父评论
-		const set = []; // * 当前链表节点集
+	const commentList_1 = commentList.filter(item => item.comment_comment_id === null).sort((a,b) => a.id - b.id)
+	const commentList_2 = commentList.filter(item => item.comment_comment_id !== null).sort((a,b) => a.id - b.id)
+	console.log('commentList_1',commentList_1)
+	console.log('commentList_2',commentList_2)
+	for (let j = 0; j <= commentList_1.length - 1; j++) {
+		const comment = commentList_1[j]; //  当前父评论
+		const set = []; //  当前链表节点集合
 		const { id } = comment;
 		set.push(id);
 
-		for (let i = commentList_2.length - 1; i >= 0; i--) {
-			// * 按从旧到新的顺序
+		for (let i = 0; i <= commentList_2.length - 1; i++) {
 			// console.log('commentList_2', commentList_2)
 			const { id: id2 } = commentList_2[i];
 			const idTo = commentList_2[i].comment_comment_id;
 			if (set.indexOf(idTo) !== -1) {
-				// * 将匹配的评论加入到当前链表节点集
+				//  将匹配的评论加入到当前链表节点集
 				set.push(id2);
 			}
 			if (idTo !== id) {
-				// * 如果是回复另一条子评论的子评论，添加信息
+				//  如果是回复另一条子评论的子评论，添加信息
 				const commentTo = commentList_2.filter(item => item.id === idTo)[0];
-				commentList_2[i].commentTo = deepCopyObj(commentTo);
+				commentList_2[i].commentTo = commentTo;
 			}
 		}
 
-		// * 父评论添加其子评论列表，列表中已具备回复信息
+		//  父评论添加其子评论列表，列表中已具备回复信息
 		set.shift();
+		console.log('set', set, comment)
 		commentList_1[j].childComments = [];
-		set.forEach((item, index) => {
-			commentList_1[j].childComments.push(deepCopyObj(commentList_2[index])); // * 局部对象需要深拷贝，否则函数退出后指针指向undefined
+		set.forEach((id) => {
+			commentList_2.forEach((comment) => {
+				if (comment.id === id) {
+					commentList_1[j].childComments.push(deepCopyObj(comment));//* 需要深拷贝
+				}
+			})
 		});
 	}
-	// commentList_1.reverse();
 	return commentList_1;
 }
 export default commentListTrans;

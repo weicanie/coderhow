@@ -1,32 +1,42 @@
 import React, { useState } from 'react';
 import { Button, Form, Input } from 'antd';
-import uploadArticle from '@/services/modules/uploadArticleWithimage';
+import uploadArticle from '@/services/modules/article/uploadArticleWithimage';
 import FormData_wei from '@/utils/formdata_wei';
 import MdEditor from '@/base-ui/md-editor';
 import getFromLS from '@/utils/ls_get';
 import { message } from 'antd';
 import MdShow from '@/base-ui/md-show';
+import TagList from './c-cpns/tagList';
+import articleMdShow from '@/utils/articleMdShow';
 const formdata_wei = new FormData_wei();
 const formItemLayout = {};
 const tailFormItemLayout = {};
+// 获取标签
+let tag = []
+export const taglist_pass = (i) => {
+	tag = i
+}
 const App = props => {
 	const { token } = getFromLS('user');
 	const [content, setContent] = useState();
 	const [title, setTitle] = useState();
 	const [isPreview, setIsPreview] = useState(false);
-	const [isMD, setIsMD] = useState(false);
+	const [isMD, setIsMD] = useState(true);
 	const [form] = Form.useForm();
+
 	const onFinish = async values => {
+
 		if (isMD) {
 			values = {
 				content,
-				title: values.title
+				title: values.title,
 			};
 		}
 		if (!values.content) {
 			message.info('内容不能为空~');
 			return;
 		}
+		values.tag = tag;
 		message.success('内容已提交审核~');
 		await uploadArticle(values, token);
 		await formdata_wei.removeAll('article_image');
@@ -61,11 +71,12 @@ const App = props => {
 				<label id="add-image" htmlFor="file-image">
 					+ 添加配图
 				</label>
-				{/* <span 
+				<span 
           id ='add-tag'
         >
-          +添加标签
-        </span> */}
+          添加标签 :
+        </span>
+				
 				<span id="span-btn" onClick={() => setIsMD(!isMD)}>
 					{isMD ? '-> 切换到文本编辑器' : '-> 切换到md编辑器'}
 				</span>
@@ -75,14 +86,14 @@ const App = props => {
 					multiple
 					onChange={e => formdata_wei.addFiles('article_image', e.target.files)}
 				/>
+				<TagList taglist_pass={taglist_pass}/>
 			</Form.Item>
 		</>
 	);
 	if (isPreview)
 		item = (
 			<>
-				<div className="title">{title}</div>
-				<MdShow value={content} />
+				<MdShow value={articleMdShow(title, content)} bgColor = {'rgb(242,243,245)'}/>
 				<span
 					id="span-btn-preview"
 					style={{

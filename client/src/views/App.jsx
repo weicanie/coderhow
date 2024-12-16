@@ -6,7 +6,6 @@ const App = memo(() => {
 	return (
 		<AppWrapper>
 			{useRoutes(routes)}
-			<div className="place-holder"></div>
 		</AppWrapper>
 	);
 });

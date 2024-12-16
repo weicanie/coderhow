@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 const AIChat = memo(() => {
   React.useEffect(() => {
 		document.body.style.backgroundColor = ' rgb(242,243,245)';
-		return () => (document.body.style.backgroundColor = '');
+		return () => {document.body.style.backgroundColor = ''};
 	}, []);
 
   const dispatch = useDispatch();
