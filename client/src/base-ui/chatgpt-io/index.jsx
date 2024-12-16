@@ -19,11 +19,11 @@ let defaultConversationsItems ;
 // *更新会话和会话列表
 async function getConversationListAndUpdate(setMessages, activeKey, setConversationsItems) {
   const conversationList = await getConversationList();
-  // console.log('getConversationListAndUpdate', conversationList)
+  console.log('getConversationListAndUpdate', conversationList)
   //浅拷贝
   const newMessages = conversationList&&conversationList[activeKey]?.content.map(item => item)
   setMessages(newMessages? newMessages : [])
-  if (!conversationList) {
+  if (!conversationList || conversationList.length === 0) {
     defaultConversationsItems = [
       {
         key: '0',
@@ -55,7 +55,7 @@ const roles = {
         borderRadius: 16,
       },
     },
-    avatar:<Avatar src={'http://47.102.108.122:8000/avatar/14'} alt="默认头像" size={60}/>,
+    avatar:<Avatar src={'http://47.102.108.122:8000/avatar/12'} alt="默认头像" size={60}/>,
   },
   //用户聊天气泡
   local: {
@@ -65,6 +65,7 @@ const roles = {
 };
 const AIChat = () => {
   const token = getFromLS('user')?.token
+  // console.log('AIChat', token)
   const navigator = useNavigator()
   const toHome = () => {
     navigator('/home')
@@ -110,7 +111,7 @@ const AIChat = () => {
   useEffect(() => {
     getConversationListAndUpdate(setMessages, activeKey, setConversationsItems)
   }, [activeKey])
-
+  console.log('conversationsItems', conversationsItems)
 
   const onSubmit = (nextContent) => {
     if (!nextContent) return;

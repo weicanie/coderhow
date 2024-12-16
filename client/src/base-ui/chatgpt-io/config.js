@@ -2,7 +2,7 @@
 
 import { CheckCircleOutlined, CommentOutlined, FireOutlined, HomeOutlined, ReadOutlined, SmileOutlined } from "@ant-design/icons";
 import { Space } from "antd";
-export const aiAvatar = 'http://localhost:8000/avatar/10'
+export const aiAvatar = 'http://47.102.108.122:8000/avatar/12'
 const renderTitle = (icon, title) => (
   <Space align="start">
     {icon}

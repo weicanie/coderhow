@@ -20,6 +20,9 @@ const slice = createSlice({
 	reducers: {
 		updateUserAvatar(state, { payload }) {
 			state.userAvatar = payload;
+		},
+		setUser(state, { payload }) {
+			state.user = payload;
 		}
 	},
 	extraReducers: builder => {
@@ -30,5 +33,5 @@ const slice = createSlice({
 });
 
 export default slice.reducer;
-export const { updateUserAvatar } = slice.actions;
+export const { updateUserAvatar , setUser} = slice.actions;
 export { coderhubCommitAction };

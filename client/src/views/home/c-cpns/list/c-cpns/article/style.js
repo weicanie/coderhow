@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 const ArticleWrapper = styled.div`
 	width: 1032px;
-	height: 170px;
+	height: 200px;
 	margin: 0px auto;
 	border-top: none;
 	background-color: white;

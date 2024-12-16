@@ -11,7 +11,8 @@ import useFetchData from '@/hooks/useFetchData';
 import getUserOwnInfo from '@/services/modules/user/getUserOwnInfo';
 import getFromLS from '@/utils/ls_get';
 import useNavigator from '@/hooks/useNavigator';
-import { shallowEqual, useSelector } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { setUser } from '@/store/modules/commitAndLogin';
 const UserCard = memo(props => {
 	const [userInfo, setUserInfo] = useState()
 	const { username, avatar_url, sign} = userInfo ? userInfo : {};
@@ -29,9 +30,11 @@ const UserCard = memo(props => {
 
 	const [isSign, serIsSign] = useState(false)
 	const navigator = useNavigator()
+	const dispatch = useDispatch()
 	function quit() {
 		removeFromLS('user');
 		storeInLS('user', { token: undefined });
+		dispatch(setUser(null))
 		navigator('/home');
 	}
 		const [form] = Form.useForm();
@@ -81,7 +84,7 @@ const UserCard = memo(props => {
 						rules={[
 							{
 								required: true,
-								message: '请输入评论内容'
+								message: '请输入签名内容'
 							}
 						]}
 					>
