@@ -9,8 +9,6 @@ import MdShow from '@/base-ui/md-show';
 import TagList from './c-cpns/tagList';
 import articleMdShow from '@/utils/articleMdShow';
 const formdata_wei = new FormData_wei();
-const formItemLayout = {};
-const tailFormItemLayout = {};
 // 获取标签
 let tag = []
 export const taglist_pass = (i) => {
@@ -64,7 +62,7 @@ const App = props => {
 				{isMD && <MdEditor setContent={setContent} />}
 			</Form.Item>
 
-			<Form.Item {...tailFormItemLayout}>
+			<Form.Item >
 				<Button type="primary" htmlType="submit" id="post-article">
 					发布
 				</Button>
@@ -110,7 +108,6 @@ const App = props => {
 		);
 	return (
 		<Form
-			{...formItemLayout}
 			form={form}
 			name="write"
 			onFinish={onFinish}

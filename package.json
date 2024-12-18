@@ -1,5 +1,10 @@
 {
   "name": "coderhow",
+  "author":{
+    "name":"weicanie",
+    "email": "2042365244@qq.com",
+    "url": "https://github.com/weicanie"
+  },
   "version": "1.0.0",
   "license": "MIT"
 }

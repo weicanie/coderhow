@@ -1,10 +1,6 @@
 import {Bubble,Conversations,Prompts,Sender,Welcome,useXAgent,useXChat,} from '@ant-design/x';
 import React, { useEffect } from 'react';
-import {
-  EllipsisOutlined,
-  PlusOutlined,
-  ShareAltOutlined,
-} from '@ant-design/icons';
+import { PlusOutlined,} from '@ant-design/icons';
 import { Avatar, Button, message, message as messager, Space } from 'antd';
 import postQuestionToAI from '@/services/modules/aichat/post-to-AI';
 import  { useStyle } from './style';
@@ -69,6 +65,9 @@ const AIChat = () => {
   const navigator = useNavigator()
   const toHome = () => {
     navigator('/home')
+  }
+  if (!token) {
+    navigator('/user')
   }
 
   const { styles } = useStyle();
@@ -218,9 +217,9 @@ const AIChat = () => {
   return (
     <div className={styles.layout}>
       <div className={styles.menu}>
-        {/* 🌟 Logo */}
+        {/* Logo */}
         {logoNode}
-        {/* 🌟 添加会话 */}
+        {/* 添加会话 */}
         <Button
           onClick={onAddConversation}
           type="link"
@@ -229,7 +228,7 @@ const AIChat = () => {
         >
           新会话
         </Button>
-        {/* 🌟 会话管理 */}
+        {/* 会话管理 */}
         <Conversations
           items={conversationsItems}
           className={styles.conversations}
@@ -238,7 +237,7 @@ const AIChat = () => {
         />
       </div>
       <div className={styles.chat}>
-        {/* 🌟 消息列表 */}
+        {/* 消息列表 */}
         <Bubble.List
           items={
             items.length > 0
@@ -254,9 +253,9 @@ const AIChat = () => {
           className={styles.messages}
           style={{padding:'0px 40px;'}}
         />
-        {/* 🌟 提示词 */}
+        {/* 提示词 */}
         <Prompts items={senderPromptsItems} onItemClick={onPromptsItemClick} />
-        {/* 🌟 输入框 */}
+        {/* 输入框 */}
         <Sender
           value={content}
           header={senderHeader}

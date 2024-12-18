@@ -1,7 +1,13 @@
 {
 	"name": "coderhow",
 	"version": "1.0.0",
+	"author":{
+    "name":"weicanie",
+    "email": "2042365244@qq.com",
+    "url": "https://github.com/weicanie"
+  },
 	"private": true,
+	"license": "MIT",
 	"dependencies": {
 		"@ant-design/icons": "^5.5.2",
 		"@ant-design/x": "^1.0.2",

@@ -24,7 +24,7 @@ app.use(async (ctx, next) => {
 	}
 });
 
-//原代码
+
 app.use(bodyParser());
 registerRouters(app);
 app.listen(PORT);

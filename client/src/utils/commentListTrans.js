@@ -16,13 +16,9 @@ function deepCopyObj(obj) {
 function commentListTrans(commentListIn) {
 	// *通过排序解决顺序不确定的问题
 	commentListIn.sort((a,b) => a.id - b.id).map(item => deepCopyObj(item));// * 按从旧到新的顺序
-	// console.log('commentListTrans', commentListIn)
 	const commentList = commentListIn.map(item => deepCopyObj(item));
-	// console.log('deepCopyObj', commentList)
 	const commentList_1 = commentList.filter(item => item.comment_comment_id === null).sort((a,b) => a.id - b.id)
 	const commentList_2 = commentList.filter(item => item.comment_comment_id !== null).sort((a,b) => a.id - b.id)
-	console.log('commentList_1',commentList_1)
-	console.log('commentList_2',commentList_2)
 	for (let j = 0; j <= commentList_1.length - 1; j++) {
 		const comment = commentList_1[j]; //  当前父评论
 		const set = []; //  当前链表节点集合

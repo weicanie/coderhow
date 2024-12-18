@@ -3,6 +3,11 @@
 	"version": "1.0.0",
 	"main": "index.js",
 	"license": "MIT",
+	"author":{
+    "name":"weicanie",
+    "email": "2042365244@qq.com",
+    "url": "https://github.com/weicanie"
+  },
 	"scripts": {
 		"start": "nodemon main.js",
 		"prettier": "npx prettier . --write"

@@ -1,4 +1,4 @@
-import React, { useContext,  useState } from 'react';
+import React, { useContext,  useMemo,  useState } from 'react';
 import { LikeOutlined, MessageOutlined } from '@ant-design/icons';
 import { Avatar, List, Space } from 'antd';
 import commentListTrans from '@/utils/commentListTrans';
@@ -6,6 +6,7 @@ import CommentInput from '@/components/comment-input';
 import CommentList from './comment-list';
 import CommentsWrapper from './style';
 import { detailContext } from '../..';
+import commentListTransPlus from '@/utils/commentListTransPlus';
 
 const Comments = props => {
 	const { articleDetail } = props;
@@ -14,9 +15,12 @@ const Comments = props => {
 	const [commentOutId, setCommentOutId] = useState();
 	//评论列表
 	const commentList = articleDetail?.comment;
-	const commentListDone = commentList && commentListTrans(commentList);
-	// *空评论情况：服务器返回含有一个所有属性为null的对象的数组
-	console.log('Comments',commentList, commentListDone )
+	let commentListDone;
+	useMemo(
+		() => commentListDone = commentList && commentList.length < 50 ?  
+		commentListTrans(commentList) : commentListTransPlus(commentList)
+	, [commentList])
+	// console.log('commentListDone',commentListDone )
 
 	const data = commentListDone?.map((comment, i) => ({
 		//评论自身id
@@ -26,7 +30,7 @@ const Comments = props => {
 		//用户头像
 		avatar: comment.user?.avatar_url,
 		//用户个性签名
-
+		sign: '',
 		//评论内容
 		content: comment.comment_content,
 		//父评论id
@@ -42,22 +46,21 @@ const Comments = props => {
 	);
 
 	// *点赞功能实现思路
-	// 思路：点赞时不点击整个评论（阻止传播），点击评论其它区域时不点赞（当然）
 	// 用stopPropagation(); 事件默认注册在冒泡阶段
 	function likeClickHandler(e) {
-		//点赞 : 向服务器POST, 该评论的点赞数+1
-		// ?  如何让一个用户只能赞一次？
-		//  进行防抖，避免用户频繁点赞，造成频繁请求
+		// 点赞：向服务器POST, 该评论的点赞数+1
+		// ? 如何让一个用户只能赞一次？
+		// 进行防抖，避免用户频繁点赞，造成频繁请求
 		e.stopPropagation();
 		console.log('likeClickHandler');
 	}
 
 	function commentClickHandler(e) {
-		//点击其它位置：评论
-		// *怎么获取父评论id，组件不能直接绑属性，故可将id绑在img元素上(data-*)
+		// 点击其它位置：评论
+		// 怎么获取父评论id：组件不能直接绑属性，故可将id绑在img元素上(data-*)
 		e.stopPropagation();
 		const commentId = e.currentTarget.firstChild.lastChild.firstChild.dataset.commentid;
-		//弹出评论框
+		// 弹出评论框
 		setCommentOutId(Number(commentId));
 		out_passDetail(true);
 	}
@@ -71,7 +74,7 @@ const Comments = props => {
 				itemLayout="vertical"
 				size="small"
 				//分页器
-/* 				pagination={{
+        /*pagination={{
 					//切页事件处理程序
 					onChange: page => {
 						console.log('pagination', page);
@@ -89,7 +92,6 @@ const Comments = props => {
 					let plHeight = item.childComment?.length ? item.childComment.length * 170.89 + 70 : 0;
 					if (out) plHeight += 170.89;
 					if (item.commentId === commentOutId) {
-						// console.log('Comments 弹出评论框')
 						extra = (
 							<CommentInput
 								articleId={articleDetail?.id}
